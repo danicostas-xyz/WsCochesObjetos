@@ -1,5 +1,5 @@
 package modelo.persistencia;
 
-public class Class {
+public class DaoObjetoCoche {
 
 }
