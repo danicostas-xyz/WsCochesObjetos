@@ -1,0 +1,39 @@
+# Archivos de Eclipse
+.metadata/
+bin/
+.classpath
+.project
+.settings/
+
+# Archivos generados por Java
+*.class
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+
+# Archivos de configuración de IDE
+.idea/
+*.iml
+
+# Archivos de registro
+*.log
+
+# Archivos temporales
+*.tmp
+*.temp
+
+# Ficheros de bases de datos
+*.db
+*.sql
+*.sqlite
+*.h2.db
+
+# Archivos de backup
+*~ 
+*.bak
+
+# Otros
+.DS_Store
+Thumbs.db
