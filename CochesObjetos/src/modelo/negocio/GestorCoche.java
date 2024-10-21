@@ -1,5 +1,5 @@
 package modelo.negocio;
 
-public class Class {
+public class GestorCoche {
 
 }
