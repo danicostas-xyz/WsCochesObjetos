@@ -16,9 +16,8 @@ public class Coche implements Serializable{
 		super();
 	}
 
-	public Coche(String id, String marca, String modelo, Motor motor) {
+	public Coche(String marca, String modelo, Motor motor) {
 		super();
-		this.id = id;
 		this.marca = marca;
 		this.modelo = modelo;
 		this.motor = motor;
@@ -26,10 +25,6 @@ public class Coche implements Serializable{
 
 	public String getId() {
 		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
 	}
 
 	public String getMarca() {
