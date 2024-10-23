@@ -12,7 +12,7 @@ import modelo.persistencia.DaoObjetoCoche;
 public class InterfazUsuario {
 
 	private GestorCoche gc;
-	private String rutaArchivo;
+	private String rutaArchivo = DaoObjetoCoche.FICHERO;
 	private Scanner scInt = new Scanner(System.in);
 	private Scanner sc = new Scanner(System.in);
 
@@ -30,11 +30,14 @@ public class InterfazUsuario {
 		seleccionarOpcion();
 
 	}
-
+	
 	public void seleccionarOpcion() {
 		byte opcion = printMenu();
 
 		switch (opcion) {
+		case 0:
+			salir();
+			break;
 		case 1:
 			introducirCoche();
 			break;
@@ -47,9 +50,6 @@ public class InterfazUsuario {
 		case 4:
 			listarTodosLosCoches();
 			break;
-		case 5:
-			salir();
-			break;
 		}
 	}
 
@@ -57,7 +57,12 @@ public class InterfazUsuario {
 		gc = new GestorCoche(rutaArchivo);
 		System.out.print("Escribe el ID del coche que deseas borrar: ");
 		String idSeleccionado = sc.nextLine();
-		byte resultado = gc.borrarCoche(idSeleccionado);
+		try {
+			byte resultado = gc.borrar(idSeleccionado);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 	}
 
@@ -101,16 +106,21 @@ public class InterfazUsuario {
 	private void listarTodosLosCoches() {
 		gc = new GestorCoche(rutaArchivo);
 
-		gc.getListaCoches().forEach(coche -> {
-			System.out.println("=====================================");
-			System.out.println("           Detalles del Coche        ");
-			System.out.println("=====================================");
-			System.out.println("ID Coche : " + coche.getId());
-			System.out.println("Marca    : " + coche.getMarca());
-			System.out.println("Modelo   : " + coche.getModelo());
-			System.out.println("Motor    : " + coche.getMotor());
-			System.out.println("-------------------------------------");
-		});
+		try {
+			gc.getListaCoches().forEach(coche -> {
+				System.out.println("=====================================");
+				System.out.println("           Detalles del Coche        ");
+				System.out.println("=====================================");
+				System.out.println("ID Coche : " + coche.getId());
+				System.out.println("Marca    : " + coche.getMarca());
+				System.out.println("Modelo   : " + coche.getModelo());
+				System.out.println("Motor    : " + coche.getMotor());
+				System.out.println("-------------------------------------");
+			});
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 	}
 
@@ -118,7 +128,13 @@ public class InterfazUsuario {
 		gc = new GestorCoche(rutaArchivo);
 		System.out.print("Escribe el ID del coche que deseas buscar: ");
 		String idSeleccionado = sc.nextLine();
-		Coche c = gc.getCocheById(idSeleccionado);
+		Coche c = null;
+		try {
+			c = gc.getCocheById(idSeleccionado);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		System.out.println("=====================================");
 		System.out.println("           Detalles del Coche        ");
@@ -185,7 +201,12 @@ public class InterfazUsuario {
 			resultadoValidacion = gc.validarCoche(c);
 		}
 
-		gc.guardarCoche(c);
+		try {
+			gc.validarCoche(c);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 	}
 

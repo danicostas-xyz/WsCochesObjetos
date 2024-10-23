@@ -16,10 +16,10 @@ public class GestorCoche {
 		this.rutaArchivo = rutaArchivo;
 	}
 
-	public byte guardarCoche(Coche c) throws Exception {
+	public byte guardarCoche(ArrayList<Coche> c) throws Exception {
 		dao = new DaoObjetoCoche(rutaArchivo);
 		try {
-			byte resultado = dao.registrar(c);
+			byte resultado = dao.registrarCoche(c);
 			if (resultado == 1) {
 				return 1;
 			}
@@ -30,6 +30,7 @@ public class GestorCoche {
 		} catch (Exception e) {
 			throw e;
 		}
+		return 0;
 
 	}
 
@@ -63,10 +64,10 @@ public class GestorCoche {
 	 * @throws Exception en caso de que haya algún problema de entrada/salida con el
 	 *                   fichero
 	 */
-	public byte borrarCoche(String id) throws Exception {
+	public byte borrar(String id) throws Exception {
 		dao = new DaoObjetoCoche(rutaArchivo);
 		try {
-			if (dao.borrar()) {
+			if (dao.borrarCoche(dao.getById(id), false)) {
 				return 1;
 			} else {
 				return 0;
@@ -86,10 +87,10 @@ public class GestorCoche {
 	 */
 	public ArrayList<Coche> getListaCoches() throws Exception {
 
-		dao = new DaoObjetoCoche();
+		dao = new DaoObjetoCoche(rutaArchivo);
 		ArrayList<Coche> listaCoches = null;
 		try {
-			listaCoches = dao.getListaCoches();
+			listaCoches = dao.getListaCoche();
 		} catch (Exception e) {
 			throw e;
 		}
