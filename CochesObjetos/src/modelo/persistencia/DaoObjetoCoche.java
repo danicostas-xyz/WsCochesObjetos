@@ -32,7 +32,16 @@ public class DaoObjetoCoche {
 
 	public DaoObjetoCoche(String nombreFichero) {
 		super();
-		this.nombreFichero = nombreFichero;
+	    this.nombreFichero = nombreFichero;
+	    File file = new File(nombreFichero);
+	    File idFile = new File("contadorID.txt");
+
+	    try {
+	        if (!file.exists()) file.createNewFile();
+	        if (!idFile.exists()) idFile.createNewFile();
+	    } catch (IOException e) {
+	        System.err.println("Error creando archivos: " + e.getMessage());
+	    }
 	}
 
 	/**
@@ -47,8 +56,8 @@ public class DaoObjetoCoche {
 		try (FileOutputStream fos = new FileOutputStream(nombreFichero, true);
 				ObjectOutputStream buffer = new ObjectOutputStream(fos)) {
 			buffer.writeObject(c);
-			registrarId(c);
 		}
+		registrarId(c);
 	}
 
 	private void registrarId(Coche c) throws IOException {
