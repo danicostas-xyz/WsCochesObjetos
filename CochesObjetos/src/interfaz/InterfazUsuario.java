@@ -3,7 +3,6 @@ package interfaz;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
-
 import modelo.entidad.Coche;
 import modelo.entidad.Motor;
 import modelo.negocio.GestorCoche;
@@ -35,6 +34,9 @@ public class InterfazUsuario {
 		byte opcion = printMenu();
 
 		switch (opcion) {
+		case 0:
+			salir();
+			break;
 		case 1:
 			introducirCoche();
 			break;
@@ -47,9 +49,6 @@ public class InterfazUsuario {
 		case 4:
 			listarTodosLosCoches();
 			break;
-		case 5:
-			salir();
-			break;
 		}
 	}
 
@@ -57,8 +56,17 @@ public class InterfazUsuario {
 		gc = new GestorCoche(rutaArchivo);
 		System.out.print("Escribe el ID del coche que deseas borrar: ");
 		String idSeleccionado = sc.nextLine();
-		byte resultado = gc.borrarCoche(idSeleccionado);
-
+		try {
+			boolean resultado = gc.borrarCochePorId(idSeleccionado);
+			if (resultado) {
+				System.out.println("Coche borrado correctamente");
+			} else {
+				System.out.println("No se ha encontrado el coche indicado");
+			}
+			seleccionarOpcion();
+		} catch (Exception e) {
+			mensajeErrorArchivo(e);
+		}
 	}
 
 	public byte printMenu() {
@@ -80,7 +88,8 @@ public class InterfazUsuario {
 			try {
 				flag = validarOpcion(opcion);
 			} catch (InputMismatchException e) {
-				System.out.println("Introduce un carácter válido");
+				System.out.println("Introduce una opción válida");
+				System.out.println("");
 			}
 		} while (!flag);
 
@@ -88,29 +97,31 @@ public class InterfazUsuario {
 	}
 
 	private boolean validarOpcion(byte opcion) throws InputMismatchException {
-		try {
-			if (opcion >= 0 && opcion <= 4) {
-				return true;
-			}
-			return false;
-		} catch (InputMismatchException e) {
-			throw e;
+
+		if (opcion >= 0 && opcion <= 4) {
+			return true;
 		}
+		return false;
 	}
 
 	private void listarTodosLosCoches() {
 		gc = new GestorCoche(rutaArchivo);
 
-		gc.getListaCoches().forEach(coche -> {
-			System.out.println("=====================================");
-			System.out.println("           Detalles del Coche        ");
-			System.out.println("=====================================");
-			System.out.println("ID Coche : " + coche.getId());
-			System.out.println("Marca    : " + coche.getMarca());
-			System.out.println("Modelo   : " + coche.getModelo());
-			System.out.println("Motor    : " + coche.getMotor());
-			System.out.println("-------------------------------------");
-		});
+		try {
+			gc.getListaCoches().forEach(coche -> {
+				System.out.println("=====================================");
+				System.out.println("           Detalles del Coche        ");
+				System.out.println("=====================================");
+				System.out.println("ID Coche : " + coche.getId());
+				System.out.println("Marca    : " + coche.getMarca());
+				System.out.println("Modelo   : " + coche.getModelo());
+				System.out.println("Motor    : " + coche.getMotor());
+				System.out.println("-------------------------------------");
+			});
+			seleccionarOpcion();
+		} catch (Exception e) {
+			mensajeErrorArchivo(e);
+		}
 
 	}
 
@@ -118,17 +129,21 @@ public class InterfazUsuario {
 		gc = new GestorCoche(rutaArchivo);
 		System.out.print("Escribe el ID del coche que deseas buscar: ");
 		String idSeleccionado = sc.nextLine();
-		Coche c = gc.getCocheById(idSeleccionado);
-
-		System.out.println("=====================================");
-		System.out.println("           Detalles del Coche        ");
-		System.out.println("=====================================");
-		System.out.println("ID Coche : " + c.getId());
-		System.out.println("Marca    : " + c.getMarca());
-		System.out.println("Modelo   : " + c.getModelo());
-		System.out.println("Motor    : " + c.getMotor());
-		System.out.println("-------------------------------------");
-
+		Coche c = null;
+		try {
+			c = gc.getCocheById(idSeleccionado);
+			System.out.println("=====================================");
+			System.out.println("           Detalles del Coche        ");
+			System.out.println("=====================================");
+			System.out.println("ID Coche : " + c.getId());
+			System.out.println("Marca    : " + c.getMarca());
+			System.out.println("Modelo   : " + c.getModelo());
+			System.out.println("Motor    : " + c.getMotor());
+			System.out.println("-------------------------------------");
+			seleccionarOpcion();
+		} catch (Exception e) {
+			mensajeErrorArchivo(e);
+		}
 	}
 
 	private void introducirCoche() {
@@ -185,8 +200,20 @@ public class InterfazUsuario {
 			resultadoValidacion = gc.validarCoche(c);
 		}
 
-		gc.guardarCoche(c);
+		try {
+			gc.guardarCoche(c);
+			seleccionarOpcion();
+		} catch (Exception e) {
+			mensajeErrorArchivo(e);
+		}
 
+	}
+
+	private void mensajeErrorArchivo(Exception e) {
+		System.out.println("Ha ocurrido un error con el archivo.");
+		System.out.println("Por favor, inténtelo más tarde");
+		System.out.println("Error: " + e);
+		seleccionarOpcion();
 	}
 
 	private void salir() {

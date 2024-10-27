@@ -1,8 +1,8 @@
 package modelo.negocio;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
-
 import modelo.entidad.Coche;
 import modelo.persistencia.DaoObjetoCoche;
 
@@ -16,28 +16,37 @@ public class GestorCoche {
 		this.rutaArchivo = rutaArchivo;
 	}
 
-	public byte guardarCoche(Coche c) throws Exception {
+	public boolean guardarCoche(Coche c) throws Exception {
 		dao = new DaoObjetoCoche(rutaArchivo);
+		c.setId(generarID(c));
 		try {
-			byte resultado = dao.registrar(c);
-			if (resultado == 1) {
-				return 1;
-			}
-
-			if (resultado == 2) {
-				return 2;
-			}
+			dao.registrarCoche(c);
+			return true;
 		} catch (Exception e) {
 			throw e;
 		}
+	}
 
+	private String generarID(Coche c) throws FileNotFoundException, IOException, Exception {
+		dao = new DaoObjetoCoche(rutaArchivo);
+		long lastIdIndex = dao.getLastIdIndex();
+		switch (c.getMotor()) {
+		case DIÉSEL:
+			return "DIE_" + lastIdIndex;
+		case GASOLINA:
+			return "GAS_" + lastIdIndex;
+		case HIDRÓGENO:
+			return "HID_" + lastIdIndex;
+		}
+		return null;
 	}
 
 	/**
 	 * Método que devuelve el coche cuyo ID coincida con el pasado por parámetro
 	 * 
 	 * @param id el ID del coche a buscar
-	 * @return coche el coche que coincida con el ID pasado por parámetro
+	 * @return coche el coche que coincida con el ID pasado por parámetro, null en
+	 *         caso de que no se encuentre ningún Coche con el ID indicado
 	 * @throws Exception en caso de que haya algún problema de entrada/salida con el
 	 *                   fichero
 	 */
@@ -58,18 +67,20 @@ public class GestorCoche {
 	 * Método que borra un coche cuyo ID sea igual al que se pasa por parámetro
 	 * 
 	 * @param id el ID asociado al coche que queremos eliminar.
-	 * @return 1 si se ha borrado el coche correctamente, 2 si no se ha borrado por
-	 *         no encontrarse
+	 * @return true si se ha borrado el coche correctamente, false si no se ha
+	 *         borrado por no encontrarse
 	 * @throws Exception en caso de que haya algún problema de entrada/salida con el
 	 *                   fichero
 	 */
-	public byte borrarCoche(String id) throws Exception {
+	public boolean borrarCochePorId(String id) throws Exception {
 		dao = new DaoObjetoCoche(rutaArchivo);
+		Coche c = new Coche();
+		c.setId(id);
 		try {
-			if (dao.borrar()) {
-				return 1;
+			if (dao.borrarCoche(c, false)) {
+				return true;
 			} else {
-				return 0;
+				return false;
 			}
 		} catch (Exception e) {
 			throw e;
@@ -86,7 +97,7 @@ public class GestorCoche {
 	 */
 	public ArrayList<Coche> getListaCoches() throws Exception {
 
-		dao = new DaoObjetoCoche();
+		dao = new DaoObjetoCoche(rutaArchivo);
 		ArrayList<Coche> listaCoches = null;
 		try {
 			listaCoches = dao.getListaCoches();
@@ -111,15 +122,14 @@ public class GestorCoche {
 	 */
 	public byte validarCoche(Coche coche) {
 		if (coche.getMarca().isBlank() || coche.getModelo().isBlank()) {
-			if (coche.getMarca().isBlank() && coche.getModelo().isBlank()) {
+			if (coche.getMarca().isBlank() && coche.getModelo().isBlank())
 				return 0;
-			} else if (coche.getMarca().isBlank()) {
+			if (coche.getMarca().isBlank())
 				return 1;
-			} else if (coche.getModelo().isBlank()) {
+			if (coche.getModelo().isBlank()) {
 				return 2;
 			}
 		}
-
 		return 3;
 
 	}

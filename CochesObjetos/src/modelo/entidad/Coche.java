@@ -1,8 +1,9 @@
 package modelo.entidad;
 
 import java.io.Serializable;
+import java.util.Objects;
 
-public class Coche implements Serializable{
+public class Coche implements Serializable {
 	/**
 	 * 
 	 */
@@ -21,6 +22,10 @@ public class Coche implements Serializable{
 		this.marca = marca;
 		this.modelo = modelo;
 		this.motor = motor;
+	}
+
+	public void setId(String id) {
+		this.id = id;
 	}
 
 	public String getId() {
@@ -49,6 +54,23 @@ public class Coche implements Serializable{
 
 	public void setMotor(Motor motor) {
 		this.motor = motor;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Coche other = (Coche) obj;
+		return Objects.equals(id, other.id);
 	}
 
 }
