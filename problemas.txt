@@ -1,0 +1,24 @@
+1. Modifico getByID()
+	- Estaba en modo output y tiene que estar en modo input para leer
+	- Cambio el método de lectura del fichero. Se estaba leyendo como si fuera un fichero de texto, con un bucle while mientras que un string != null. Un fichero binario se lee distinto, bien mientras no se arroje la excepción EOFException o bien mientras haya bytesEnBuffer, que es la opción implementada (bytesEnBuffer = fileInputStream.available();
+
+2. Modifico getListaCoche()
+	- Cambio el método de lectura. Se lee el fichero mientras bytesEnBuffer > 0.
+	- (finalmente lo hice con el EOFException)
+
+3. Modifico escribirCoche().
+	- Se estaba haciendo buffer.writeObject(c.toString()), pero lo que hay que guardar en el fichero es el propio objeto, no el objeto pasado a String.
+
+4. Añado comentarios al método borrarCoche() para entenderlo mejor.
+
+5. Add método registrarId(Coche c) y getLastIdIndex(). Se crea un fichero adicional donde se irán guardando los ID generados. Aunque se borre un coche del fichero de coches, no se borrará el ID correspondiente del fichero de IDs, con el fin de nunca repetir un ID en un coche.
+
+6. Override equals() en Coche para que dé true si coincide el ID. El resto de atributos son irrelevantes para la comparación.
+
+*** PROBLEMAS ***
+
+-> Si no creo los archivos manualmente, no se crean
+-> Si creo los archivos manualmente, se escribe en ellos, el contador de ID va bien, se escriben objetos en el binario, pero no me deja leerlos porque me da error java.io.StreamCorruptedException: invalid type code: AC. Que según chatGPT se debe a que estoy escribiendo más de una cabecera en el archivo binario.
+
+-> Con la comprobación previa en el constructor del dao, me crea los ficheros, pero eso no debería ser necesario, no?
+-> Si solo escribo un objeto, sí que funciona todo, la lectura, recuperar por ID y borrar. Pero si pongo más de 1, da error de CorruptedException.
