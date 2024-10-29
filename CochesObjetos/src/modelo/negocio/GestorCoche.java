@@ -21,6 +21,7 @@ public class GestorCoche {
 			dao.registrarCoche(c);
 			return true;
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw e;
 		}
 	}

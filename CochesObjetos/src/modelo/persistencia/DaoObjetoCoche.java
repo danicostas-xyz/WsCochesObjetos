@@ -125,24 +125,28 @@ public class DaoObjetoCoche {
 //		listaCoches.add(c);
 //		
 //		return listaCoches;
+		
+		Coche c = new Coche();
+		ArrayList<Coche> listaCoche = new ArrayList<Coche>();
+		
+		File f = new File(nombreFichero);
+		if (f.length() == 0) {
+			return listaCoche;
+		}
 
 		try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(nombreFichero))) {
 
-			Coche c = new Coche();
-			ArrayList<Coche> listaCoche = new ArrayList<Coche>();
-
 			boolean eof = false;
-
 			while (!eof) {
 				try {
 					c = (Coche) ois.readObject();
 					listaCoche.add(c);
 				} catch (EOFException e) {
-					eof = true;
+					return listaCoche;
 				}
 			}
-			return listaCoche;
 		}
+		return listaCoche; 
 	}
 
 	/**
