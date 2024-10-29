@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import modelo.entidad.Coche;
+import modelo.entidad.Motor;
 
 public class DaoObjetoCoche {
 
@@ -60,13 +61,9 @@ public class DaoObjetoCoche {
 
 		try (ObjectOutputStream buffer = new ObjectOutputStream(new FileOutputStream(nombreFichero))) {
 
-			listaCoches.forEach(coche -> {
-				try {
-					buffer.writeObject(coche);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			});
+			for (Coche coche : listaCoches) {
+				buffer.writeObject(coche);
+			}
 		}
 	}
 
@@ -111,12 +108,25 @@ public class DaoObjetoCoche {
 	 * persistencia
 	 *
 	 * @return listaCoche es un ArrayList de Coche
+	 * @throws IOException 
+	 * @throws FileNotFoundException 
+	 * @throws ClassNotFoundException 
 	 * @throws Exception en caso de que suceda un error en la lectura del fichero
 	 */
-	public ArrayList<Coche> getListaCoches() throws Exception {
+	public ArrayList<Coche> getListaCoches() throws FileNotFoundException, IOException, ClassNotFoundException{
+		
+//		Motor m = Motor.GASOLINA;
+//		
+//		Coche c = new Coche("Ferrari", "F40", m);
+//		c.setId("GAS_00");
+//		
+//		
+//		ArrayList<Coche> listaCoches = new ArrayList<>();
+//		listaCoches.add(c);
+//		
+//		return listaCoches;
 
-		try (FileInputStream fis = new FileInputStream(nombreFichero);
-				ObjectInputStream ois = new ObjectInputStream(fis)) {
+		try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(nombreFichero))) {
 
 			Coche c = new Coche();
 			ArrayList<Coche> listaCoche = new ArrayList<Coche>();
@@ -131,13 +141,8 @@ public class DaoObjetoCoche {
 					eof = true;
 				}
 			}
-
 			return listaCoche;
-
-		} catch (Exception e) {
-			throw e;
 		}
-
 	}
 
 	/**
