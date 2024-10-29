@@ -166,10 +166,10 @@ public class InterfazUsuario {
 			motor = Motor.GASOLINA;
 			break;
 		case 2:
-			motor = Motor.DIÉSEL;
+			motor = Motor.DIESEL;
 			break;
 		case 3:
-			motor = Motor.HIDRÓGENO;
+			motor = Motor.HIDROGENO;
 			break;
 		}
 

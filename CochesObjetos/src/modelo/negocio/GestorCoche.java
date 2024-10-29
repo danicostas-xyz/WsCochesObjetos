@@ -31,11 +31,11 @@ public class GestorCoche {
 		dao = new DaoObjetoCoche(rutaArchivo);
 		long lastIdIndex = dao.getLastIdIndex();
 		switch (c.getMotor()) {
-		case DIÉSEL:
+		case DIESEL:
 			return "DIE_" + lastIdIndex;
 		case GASOLINA:
 			return "GAS_" + lastIdIndex;
-		case HIDRÓGENO:
+		case HIDROGENO:
 			return "HID_" + lastIdIndex;
 		}
 		return null;

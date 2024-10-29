@@ -2,5 +2,5 @@ package modelo.entidad;
 
 
 public enum Motor {
-	GASOLINA, DIÉSEL, HIDRÓGENO
+	GASOLINA, DIESEL, HIDROGENO
 }
