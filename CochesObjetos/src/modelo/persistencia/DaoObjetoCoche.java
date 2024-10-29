@@ -13,35 +13,37 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.List;
 
 import modelo.entidad.Coche;
 
 public class DaoObjetoCoche {
 
 	public static final String FICHERO = "coches.dat";
-
 	private String nombreFichero;
 
 	public String getNombreFichero() {
 		return nombreFichero;
 	}
-
+	
 	public void setNombreFichero(String nombreFichero) {
 		this.nombreFichero = nombreFichero;
 	}
 
 	public DaoObjetoCoche(String nombreFichero) {
 		super();
-	    this.nombreFichero = nombreFichero;
-	    File file = new File(nombreFichero);
-	    File idFile = new File("contadorID.txt");
+		this.nombreFichero = nombreFichero;
+		File file = new File(nombreFichero);
+		File idFile = new File("contadorID.txt");
 
-	    try {
-	        if (!file.exists()) file.createNewFile();
-	        if (!idFile.exists()) idFile.createNewFile();
-	    } catch (IOException e) {
-	        System.err.println("Error creando archivos: " + e.getMessage());
-	    }
+		try {
+			if (!file.exists())
+				file.createNewFile();
+			if (!idFile.exists())
+				idFile.createNewFile();
+		} catch (IOException e) {
+			System.err.println("Error creando archivos: " + e.getMessage());
+		}
 	}
 
 	/**
@@ -49,34 +51,42 @@ public class DaoObjetoCoche {
 	 * pasado por parámetro.
 	 * 
 	 * @param <b>c</b> El coche a escribir en fichero.
-	 * @throws IOException En caso de que arroje excepción por algún problema en la
-	 *                     comunicación con el fichero
+	 * @throws Exception
 	 */
-	private void escribirCoche(Coche c) throws IOException {
-		try (FileOutputStream fos = new FileOutputStream(nombreFichero, true);
-				ObjectOutputStream buffer = new ObjectOutputStream(fos)) {
-			buffer.writeObject(c);
+	private void escribirCoche(Coche c) throws Exception {
+
+		List<Coche> listaCoches = getListaCoches();
+		listaCoches.add(c);
+
+		try (ObjectOutputStream buffer = new ObjectOutputStream(new FileOutputStream(nombreFichero))) {
+
+			listaCoches.forEach(coche -> {
+				try {
+					buffer.writeObject(coche);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			});
 		}
-		registrarId(c);
 	}
 
-	private void registrarId(Coche c) throws IOException {
-		try (FileWriter fw = new FileWriter("contadorID.txt", true); BufferedWriter bw = new BufferedWriter(fw)) {
-			bw.write(c.getId());
-			bw.newLine();
+	private void registrarId(Coche c) throws Exception {
+		int lastId = getLastIdIndex();
+		c.setId(c.getId() + (lastId + 1));
+		try (BufferedWriter bw = new BufferedWriter(new FileWriter("contadorID.txt"))) {
+			bw.write(String.valueOf((lastId + 1)));
 		}
 	}
 
-	public long getLastIdIndex() throws FileNotFoundException, IOException, Exception {
+	private int getLastIdIndex() throws FileNotFoundException, IOException, Exception {
 
 		try (FileReader fr = new FileReader("contadorID.txt"); BufferedReader br = new BufferedReader(fr)) {
 			String linea = br.readLine();
-			long lastIdIndex = 0;
-			while (linea != null) {
-				lastIdIndex++;
-				linea = br.readLine();
+			
+			if (linea != null) {
+				return Integer.parseInt(linea);
 			}
-			return lastIdIndex;
+			return 0;
 		}
 	}
 
@@ -92,6 +102,7 @@ public class DaoObjetoCoche {
 		if (!f.exists()) {
 			throw new Exception("Error con fichero. Inténtelo de nuevo más tarde");
 		}
+		registrarId(c);
 		escribirCoche(c);
 	}
 

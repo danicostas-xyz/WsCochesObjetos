@@ -1,12 +1,10 @@
 package interfaz;
 
-import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 import modelo.entidad.Coche;
 import modelo.entidad.Motor;
 import modelo.negocio.GestorCoche;
-import modelo.persistencia.DaoObjetoCoche;
 
 public class InterfazUsuario {
 
@@ -33,23 +31,27 @@ public class InterfazUsuario {
 	public void seleccionarOpcion() {
 		byte opcion = printMenu();
 
-		switch (opcion) {
-		case 0:
-			salir();
-			break;
-		case 1:
-			introducirCoche();
-			break;
-		case 2:
-			mostrarCocheById();
-			break;
-		case 3:
-			borrarCochePorId();
-			break;
-		case 4:
-			listarTodosLosCoches();
-			break;
+		while(opcion != 0) {
+			switch (opcion) {
+			case 1:
+				introducirCoche();
+				opcion = printMenu();
+				break;
+			case 2:
+				mostrarCocheById();
+				opcion = printMenu();
+				break;
+			case 3:
+				borrarCochePorId();
+				opcion = printMenu();
+				break;
+			case 4:
+				listarTodosLosCoches();
+				opcion = printMenu();
+				break;
+			}
 		}
+		salir();
 	}
 
 	private void borrarCochePorId() {
@@ -63,7 +65,6 @@ public class InterfazUsuario {
 			} else {
 				System.out.println("No se ha encontrado el coche indicado");
 			}
-			seleccionarOpcion();
 		} catch (Exception e) {
 			mensajeErrorArchivo(e);
 		}
@@ -118,7 +119,6 @@ public class InterfazUsuario {
 				System.out.println("Motor    : " + coche.getMotor());
 				System.out.println("-------------------------------------");
 			});
-			seleccionarOpcion();
 		} catch (Exception e) {
 			mensajeErrorArchivo(e);
 		}
@@ -140,7 +140,6 @@ public class InterfazUsuario {
 			System.out.println("Modelo   : " + c.getModelo());
 			System.out.println("Motor    : " + c.getMotor());
 			System.out.println("-------------------------------------");
-			seleccionarOpcion();
 		} catch (Exception e) {
 			mensajeErrorArchivo(e);
 		}
@@ -202,7 +201,6 @@ public class InterfazUsuario {
 
 		try {
 			gc.guardarCoche(c);
-			seleccionarOpcion();
 		} catch (Exception e) {
 			mensajeErrorArchivo(e);
 		}
@@ -213,7 +211,6 @@ public class InterfazUsuario {
 		System.out.println("Ha ocurrido un error con el archivo.");
 		System.out.println("Por favor, inténtelo más tarde");
 		System.out.println("Error: " + e);
-		seleccionarOpcion();
 	}
 
 	private void salir() {

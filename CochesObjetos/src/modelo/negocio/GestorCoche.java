@@ -9,15 +9,13 @@ import modelo.persistencia.DaoObjetoCoche;
 public class GestorCoche {
 
 	private DaoObjetoCoche dao;
-	private String rutaArchivo;
 
 	public GestorCoche(String rutaArchivo) {
 		super();
-		this.rutaArchivo = rutaArchivo;
+		dao = new DaoObjetoCoche(rutaArchivo);
 	}
 
 	public boolean guardarCoche(Coche c) throws Exception {
-		dao = new DaoObjetoCoche(rutaArchivo);
 		c.setId(generarID(c));
 		try {
 			dao.registrarCoche(c);
@@ -28,15 +26,13 @@ public class GestorCoche {
 	}
 
 	private String generarID(Coche c) throws FileNotFoundException, IOException, Exception {
-		dao = new DaoObjetoCoche(rutaArchivo);
-		long lastIdIndex = dao.getLastIdIndex();
 		switch (c.getMotor()) {
 		case DIESEL:
-			return "DIE_" + lastIdIndex;
+			return "DIE_";
 		case GASOLINA:
-			return "GAS_" + lastIdIndex;
+			return "GAS_";
 		case HIDROGENO:
-			return "HID_" + lastIdIndex;
+			return "HID_";
 		}
 		return null;
 	}
@@ -51,16 +47,13 @@ public class GestorCoche {
 	 *                   fichero
 	 */
 	public Coche getCocheById(String id) throws Exception {
-		dao = new DaoObjetoCoche(rutaArchivo);
 		Coche coche = null;
 		try {
 			coche = dao.getById(id);
 		} catch (Exception e) {
 			throw e;
 		}
-
 		return coche;
-
 	}
 
 	/**
@@ -73,7 +66,6 @@ public class GestorCoche {
 	 *                   fichero
 	 */
 	public boolean borrarCochePorId(String id) throws Exception {
-		dao = new DaoObjetoCoche(rutaArchivo);
 		Coche c = new Coche();
 		c.setId(id);
 		try {
@@ -85,7 +77,6 @@ public class GestorCoche {
 		} catch (Exception e) {
 			throw e;
 		}
-
 	}
 
 	/**
@@ -96,15 +87,12 @@ public class GestorCoche {
 	 *                   fichero
 	 */
 	public ArrayList<Coche> getListaCoches() throws Exception {
-
-		dao = new DaoObjetoCoche(rutaArchivo);
 		ArrayList<Coche> listaCoches = null;
 		try {
 			listaCoches = dao.getListaCoches();
 		} catch (Exception e) {
 			throw e;
 		}
-
 		return listaCoches;
 	}
 
@@ -121,7 +109,6 @@ public class GestorCoche {
 	 *         en blanco), <b>3</b> en caso de que sea válido.
 	 */
 	public byte validarCoche(Coche coche) {
-		if (coche.getMarca().isBlank() || coche.getModelo().isBlank()) {
 			if (coche.getMarca().isBlank() && coche.getModelo().isBlank())
 				return 0;
 			if (coche.getMarca().isBlank())
@@ -129,9 +116,7 @@ public class GestorCoche {
 			if (coche.getModelo().isBlank()) {
 				return 2;
 			}
-		}
 		return 3;
-
 	}
 
 }
